@@ -2,7 +2,6 @@ import streamlit as st
 import pandas as pd
 import math
 import altair as alt
-import io
 from bidi.algorithm import get_display
 
 st.set_page_config(page_title="מחשבון Enlight", layout="wide")
