@@ -2,7 +2,6 @@ import streamlit as st
 import pandas as pd
 import math
 import altair as alt
-import matplotlib.pyplot as plt
 import io
 from bidi.algorithm import get_display
 
