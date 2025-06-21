@@ -7,7 +7,7 @@ import altair as alt
 st.set_page_config(page_title="מחשבון Enlight", layout="wide")
 
 # --- לוגו גדול בראש הדף ----------------
-st.image("logo.png")
+#st.image("logo.png")
 
 # --- קלטים לשתי העמודות: Enlight ו-מתחרה --------
 left_col, right_col = st.columns([1, 2])
