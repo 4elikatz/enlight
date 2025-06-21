@@ -59,59 +59,26 @@ with left_col:
         st.text_input('תשלום מהוון מתחרה', value=total_rent_c3_str, disabled=False, key='total_rent_c3')
 
 with right_col:
-    # Data
+    # הצגת גרף בעזרת Altair
     values = [rent_total_e3, rent_total_c3]
+    labels = ['Enlight', 'מתחרה']
     colors = ['orange', 'blue']
-    labels = ['Enlight', "מתחרה"]
 
-    # Create figure (6×4 inches) with higher DPI for clarity
-    fig, ax = plt.subplots(figsize=(6, 4), dpi=150)
-    bars = ax.bar(labels, values, color=colors)
+    df_chart = pd.DataFrame({'label': labels, 'value': values})
+    chart = alt.Chart(df_chart).mark_bar().encode(
+        x=alt.X('label:N', title=''),
+        y=alt.Y('value:Q', title=''),
+        color=alt.Color('label:N', scale=alt.Scale(domain=labels, range=colors), legend=None)
+    ).properties(width=600, height=400)
 
-    # Determine a small vertical offset for the value-text
-    max_val = max(values) if len(values) > 0 else 0
-    offset = max_val * 0.02  # 2% of the maximum value
+    text = alt.Chart(df_chart).mark_text(
+        align='center',
+        baseline='bottom',
+        dy=-5
+    ).encode(
+        x='label:N',
+        y='value:Q',
+        text=alt.Text('value:Q', format=',.1f')
+    )
 
-    # Extend Y-axis to 1.5× the highest bar
-    ax.set_ylim(0, max_val * 1.5)
-
-    for bar, label, value in zip(bars, labels, values):
-        h = bar.get_height()
-        # Label inside the bar (75% of bar height)
-        try:
-            label_shaped = get_display(label)
-        except Exception:
-            label_shaped = label
-
-        ax.text(
-            bar.get_x() + bar.get_width() / 2,
-            h * 0.75,
-            label_shaped,
-            ha='center',
-            va='center',
-            color='white',
-            fontweight='bold'
-        )
-        # Value just above the bar
-        ax.text(
-            bar.get_x() + bar.get_width() / 2,
-            h + offset,
-            f"{value:,.1f}",
-            ha='center',
-            va='bottom',
-            color='black',
-            fontweight='bold'
-        )
-
-    ax.set_xticks([])  # Remove x‐axis ticks
-    ax.set_yticks([])  # Remove y‐axis ticks
-    #ax.set_title('Enlight vs. Competitor')
-    plt.tight_layout()
-
-    # Save to buffer
-    buf = io.BytesIO()
-    fig.savefig(buf, format='png', bbox_inches='tight')
-    buf.seek(0)
-
-    # Display the (non‐stretched) image
-    right_col.image(buf)
+    st.altair_chart(chart + text, use_container_width=True)
